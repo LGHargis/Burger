@@ -1,0 +1,12 @@
+ {{burger_name}}
+<form action="/api/burgers/{{this.id}}?_method=PUT" method="POST">
+    <input style="display:none;" name="devoured" value="{{devoured}}" />
+
+    <button type='submit' class="change-devoured" data-id="{{id}}" data-newdevoured="{{devoured}}">
+        {{#if devoured}}EAT TIME!{{else}} ADD TO MENU!{{/if}}
+    </button>
+
+</form>
+<form action="/api/burgers/{{this.id}}?_method=DELETE" method="POST">
+    <button type="submit" class="delete-burger" data-id="{{this.id}}">DELETE!</button>
+</form>

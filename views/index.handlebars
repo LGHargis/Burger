@@ -1,89 +1,28 @@
 <h1>Burger Menu!</h1>
 
-<ul>
-    {{#each burgers}}
-    <li>
-        <p>
-            {{this.id}}. {{this.burger_name}}
+<h2>Menu:</h2>
 
-            <button data-burgid="{{this.id}}" class="devour">Devour!</button>
-        </p>
-    </li>
-    {{/each}}
+<ul>
+    {{#each burgers}} {{#unless devoured}} {{> burgers/burgers-block devoured=true}} {{/unless}} {{/each}}
 </ul>
 
-<h2>Create a Burger!</h2>
-<form id="create" class="button-size">
-    <textarea type="text" name="burger_name"></textarea>
-    <button type="submit">Add Burger!</button>
+<h2>Burgers You Have Devoured!</h2>
+
+<ul>
+    {{#each burgers}} {{#if devoured}} {{> burgers/burgers-block devoured=false}} {{/if}} {{/each}}
+</ul>
+
+<h2>Add a burger to our menu!</h2>
+<form class="create-form">
+    <div class="form-group">
+        <label for="ca">Burger Name:</label>
+        <input type="text" id="ca" name="burger_name">
+    </div>
+
+    <div class="form-group">
+        <label>New Burger Idea?</label><br>
+        <input type="radio" name="devoured" value="0"> Put on Menu
+    </div>
+
+    <button type="submit">Add Burger</button>
 </form>
-
-<h2>Update Menu</h2>
-<form id="updateMenu" class="button-size">
-    <select name="id">
-        {{#each burgers}}
-        <option value="{{this.id}}">{{this.burger_name}}</option>
-        {{/each}}
-    </select>
-    <textarea type="text" name="Burg" placeholder=""></textarea>
-    <button type="submit">Update!</button>
-</form>
-
-<script type="text/javascript">
-    //links to the delete burger function in server
-    $(".devour").on("click", function (event) {
-
-        var id = $(this).data("burgid");
-
-        $.ajax("/burgers/" + id, {
-            type: "DELETE"
-        }).then(
-            function () {
-                console.log("deleted id ", id);
-                location.reload();
-            }
-        );
-    });
-    //create a new burger function from server-----------------------------------
-    $("#create").on("submit", function (event) {
-        event.preventDefault();
-
-        var newBurger = {
-            burger_name: $("#create [name=burger_name]").val().trim()
-        };
-
-        $.ajax("/burgers", {
-            type: "POST",
-            data: newBurger
-        }).then(
-            function () {
-                console.log("created new burger");
-                location.reload();
-            }
-        );
-    });
-    //update the menu of burgers
-    $("#updateMenu").on("submit", function (event) {
-
-        event.preventDefault();
-
-        // Get the ID by finding an element with a "name" attribute equal to the string "id"
-        var id = $("[name=id]").val().trim();
-
-        var updatedBurger = {
-            burger_name: $("#updateMenu [name=Burg]").val().trim()
-        };
-
-        // Send the PUT request.
-        $.ajax("/burgers/" + id, {
-            type: "PUT",
-            data: updatedBurger
-        }).then(
-            function () {
-                console.log("updated id ", id);
-                // Reload the page to get the updated list
-                location.reload();
-            }
-        );
-    });
-</script>
